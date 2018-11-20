@@ -1,0 +1,4 @@
+.lein-failures
+*.swp
+*.swo
+target
