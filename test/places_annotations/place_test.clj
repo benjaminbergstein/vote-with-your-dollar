@@ -5,18 +5,18 @@
 
 (def lat-lng { :lat 37.770594 :lng -122.435470 })
 
-(def ten-miles (place/miles=>meters 10))
+(def one-miles (place/miles=>meters 1))
 
 (def lat-lng-str (place/lat-lng=>str lat-lng))
 (def point (str "point:" lat-lng-str))
-(def circle (str "circle:" ten-miles "@" lat-lng-str))
+(def circle (str "circle:" one-miles "@" lat-lng-str))
 
 (def expected-params
   { :query 'restaurants
     :fields place/fields
     :key place/api-key
     :location lat-lng-str
-    :radius ten-miles })
+    :radius one-miles })
 
 (def expected-base-url "https://maps.googleapis.com/maps/api/place/textsearch/json")
 
@@ -24,7 +24,7 @@
   (is (= point (place/lat-lng=>point lat-lng))))
 
 (deftest lat-lng=>circle
-  (is (= circle (place/lat-lng=>circle lat-lng ten-miles))))
+  (is (= circle (place/lat-lng=>circle lat-lng one-miles))))
 
 (deftest params
     (is (= expected-params (place/params lat-lng))))

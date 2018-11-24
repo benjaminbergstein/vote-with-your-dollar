@@ -24,7 +24,10 @@
     :fields fields
     :key api-key
     :location (lat-lng=>str lat-lng)
-    :radius (miles=>meters 10) })
+    :radius (miles=>meters 1) })
+
+(defn =>url [place]
+  (str "https://www.google.com/maps/search/?api=1&query=" (get place "name") "&query_place_id=" (get place "id")))
 
 (defn near-by [lat-lng]
   (let [options { :query-params (params lat-lng) }

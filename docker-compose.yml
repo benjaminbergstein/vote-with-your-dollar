@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ben
+      POSTGRES_PASSWORD: ""
+      POSTGRES_DB: places_annotations_${APP_ENV:-development}
+    volumes:
+      - ./data/postgres/${APP_ENV:-development}:/var/lib/postgresql/data
+    ports:
+      - 65432:5432
