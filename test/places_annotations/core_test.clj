@@ -29,16 +29,21 @@
       (is (= 302 (:status res))
       (is (= "/" (get-in res [:headers "Location"])))))))
 
+(defn score [value]
+  { :value value
+    :question { :question "Foo" } })
+
 (deftest index-place-scores
   (with-redefs [places-annotations.score/for-place
                 (fn [id]
                   (is (= "123" id))
-                  [1 2 3])]
-    (let [req (mock/request :get "/places/123/scores")
+                  (map score [1 2 3]))]
+    (let [req (mock/request :get "/places/123/scores?name=Foo%20Bar")
           res (app req)]
 
       (is (re-find #"1" (:body res)))
       (is (re-find #"2" (:body res)))
       (is (re-find #"3" (:body res)))
+      (is (re-find #"Foo Bar" (:body res)))
 
       )))

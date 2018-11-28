@@ -1,4 +1,4 @@
-  window.addEventListener('load', function() {
+window.addEventListener('load', function() {
   if (typeof window.resultsForm !== 'undefined') {
     if (!navigator.geolocation){
       alert("This doesn't work without your location");

@@ -13,8 +13,8 @@
   (GET "/places/:id/scores/new" [id name] (view/new-score id name))
   (POST "/scores" [score]
     (score/submit score)
-    {:status 302, :headers {"Location" "/"}, :body ""})
-  (GET "/places/:id/scores" [id] (view/scores-for-place id))
+    {:status 302 :headers {"Location" "/"} :body ""})
+  (GET "/places/:id/scores" [id name] (view/scores-for-place id name))
   (route/resources "/")
   (route/not-found "Page not found"))
 

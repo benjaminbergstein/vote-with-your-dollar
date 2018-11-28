@@ -1,0 +1,1 @@
+ALTER TABLE scores ADD COLUMN question_id INTEGER

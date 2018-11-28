@@ -4,6 +4,7 @@
             [hiccup.element :as elem]
             [cheshire.core :refer :all]
             [places-annotations.place :as place]
+            [places-annotations.question :as question]
             [places-annotations.score :as score])
   (:use hiccup.def))
 
@@ -21,9 +22,8 @@
     (ph/include-js "/js/my.js")))
 
 (defn places-near=>table [lat-lng]
-  (common {:page/content
-    [:table.table.is-fullwidth
-     [:thead
+  [:table.table.is-fullwidth
+    [:thead
       [:tr [:th {:colspan 3} "Places Nearby"]]]
       (for [result (place/near-by lat-lng)]
         [:tr
@@ -34,9 +34,9 @@
             [:a {:href (str "/places/" (get result "id") "/scores/new?name=" (get result "name"))} "add score"]]
 
           [:td
-            [:a {:href (str "/places/" (get result "id") "/scores")} "see scores"]]]
+            [:a {:href (str "/places/" (get result "id") "/scores?name=" (get result "name"))} "see scores"]]]
 
-        )]}))
+      )])
 
 (defn places [lat-lng]
   (common {:page/content
@@ -49,26 +49,35 @@
     [:div
       (title (str "Score \"" name "\""))
 
-      [:div.content
-        [:p "Does this place ask if you want cutlery when ordering to go?"]]
+      (for [question question/all]
+        [:div
+          [:div.content
+            [:p (:question question)]]
 
-      [:form { :action (str "/scores") :method :POST }
-        [:input {:name "score[id]" :type "hidden" :value id}]
+          [:form { :action (str "/scores") :method :POST }
+            [:input {:name "score[id]" :type "hidden" :value id}]
+            [:input {:name "score[question_id]" :type "hidden" :value (:id question)}]
 
-        (for [i [1 2 3 4 5]]
-          [:span
-            [:button.button {:name "score[value]" :value i} i]
-            [:span " "]])
+            (for [i [1 2 3 4 5]]
+              [:span
+                [:button.button {:name "score[value]" :value i} i]
+                [:span " "]
 
-      ]]}))
+          ])]
+        ])]}))
 
-(defn scores-for-place [id]
+(defn scores-for-place [id name]
   (common {:page/content
     [:div
-      (for [score (score/for-place id)]
-        [:div score])
+     (title (str "Scores for \"" name "\""))
+     [:table.table.is-fullwidth
+       (for [score (score/for-place id)]
+         [:tr
+           [:td (:value score)]
+           [:td (get-in score [:question :question])]
+         ])
 
-    ]}))
+    ]]}))
 
 (defn redirect []
   (common {:page/content
