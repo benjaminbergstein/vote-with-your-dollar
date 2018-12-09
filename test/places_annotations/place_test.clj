@@ -12,7 +12,7 @@
 (def circle (str "circle:" one-miles "@" lat-lng-str))
 
 (def expected-params
-  { :query 'restaurants
+  { :query "lollipops"
     :fields place/fields
     :key place/api-key
     :location lat-lng-str
@@ -27,7 +27,7 @@
   (is (= circle (place/lat-lng=>circle lat-lng one-miles))))
 
 (deftest params
-    (is (= expected-params (place/params lat-lng))))
+    (is (= expected-params (place/params lat-lng "lollipops"))))
 
 (deftest base-url
   (is (= expected-base-url (place/base-url "textsearch" "json"))))
@@ -35,18 +35,24 @@
 (def sample-response
   { :body (generate-string { "results" [ "foo" "bar" "baz" ] }) })
 
+(defn a []
+  (fn [url options]
+    (let [p (promise)]
+      (is (= expected-base-url url))
+      (is (= expected-params (:query-params options)))
+
+      (future
+        (Thread/sleep 10)
+        (deliver p sample-response))
+
+      p)))
+
+(defmacro with-stubbed [& body]
+  `(with-redefs
+    [org.httpkit.client/get (a)]
+
+    (do ~@body)))
+
 (deftest near
-  (with-redefs
-    [org.httpkit.client/get (fn [url options]
-      (let [p (promise)]
-        (is (= expected-base-url url))
-        (is (= expected-params (:query-params options)))
-
-        (future
-          (Thread/sleep 10)
-          (deliver p sample-response))
-
-        p))]
-
-    (is (= [ "foo" "bar" "baz" ] (place/near-by lat-lng)))))
-
+  (with-stubbed
+    (is (= [ "foo" "bar" "baz" ] (place/near-by lat-lng "lollipops")))))

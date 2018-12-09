@@ -9,7 +9,7 @@
 
 (defroutes main-routes
   (GET "/" [] (view/redirect))
-  (GET "/places" [coord] (view/places coord))
+  (GET "/places" [coord query] (view/places coord query))
   (GET "/places/:id/scores/new" [id name] (view/new-score id name))
   (POST "/scores" [score]
     (score/submit score)

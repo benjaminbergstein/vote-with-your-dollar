@@ -19,8 +19,8 @@
 (defn lat-lng=>circle [lat-lng meters]
   (str "circle:" meters "@" (lat-lng=>str lat-lng)))
 
-(defn params [lat-lng]
-  { :query 'restaurants
+(defn params [lat-lng query]
+  { :query query
     :fields fields
     :key api-key
     :location (lat-lng=>str lat-lng)
@@ -29,12 +29,16 @@
 (defn =>url [place]
   (str "https://www.google.com/maps/search/?api=1&query=" (get place "name") "&query_place_id=" (get place "id")))
 
-(defn near-by [lat-lng]
-  (let [options { :query-params (params lat-lng) }
+(defn near-by [lat-lng query]
+  (let [options { :query-params (params lat-lng query) }
         res @(http/get (base-url "textsearch" "json") options)]
 
-    (-> res
+    (let [data (-> res
       (:body)
       (parse-string)
-      (get "results"))))
+      (get "results"))]
+
+      (spit "./foo.json" (generate-string data))
+
+      data)))
 

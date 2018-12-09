@@ -18,17 +18,20 @@
      [:title "Vote with your dollar"]
      (ph/include-css "/css/my.css")
      (ph/include-css "/css/bulma.css")]
+     (ph/include-css "/css/fontawesome.css")
     [:body [:div.container { :style "margin-top: 3em;" }(page :page/content )]]
     (ph/include-js "/js/my.js")))
 
-(defn places-near=>table [lat-lng]
+(defn places-near=>table [lat-lng query]
   [:table.table.is-fullwidth
     [:thead
       [:tr [:th {:colspan 3} "Places Nearby"]]]
-      (for [result (place/near-by lat-lng)]
+      (for [result (place/near-by lat-lng query)]
         [:tr
           [:td
-            [:a {:href (place/=>url result) :target "_BLANK"} (get result "name")]]
+            [:a {:href (place/=>url result) :target "_BLANK"}
+              [:p (str (get result "name") " (" (get result "rating") ")")]]
+            [:p (get result "formatted_address")]]
 
           [:td
             [:a {:href (str "/places/" (get result "id") "/scores/new?name=" (get result "name"))} "add score"]]
@@ -38,11 +41,23 @@
 
       )])
 
-(defn places [lat-lng]
+(defn places [lat-lng query]
   (common {:page/content
             [:div
               (title "Vote with your dollar")
-              (places-near=>table lat-lng)]}))
+
+              [:form { :action "/places" :method :GET }
+                [:div.field.has-addons
+                  [:div.control.is-expanded.has-icons-left
+                    [:input.input {:type "text" :name "query" :value query :autofocus "autofocus"}]
+                    [:span.icon.is-left
+                      [:i.fas.fa-search]]]
+                  [:div.control
+                    [:button.button.is-info "Search"]]]
+                [:input#latitude {:type "hidden" :name "coord[lat]" :value (:lat lat-lng)}]
+                [:input#longitude {:type "hidden" :name "coord[lng]" :value (:lng lat-lng)}]]
+
+              (places-near=>table lat-lng query)]}))
 
 (defn new-score [id name]
   (common {:page/content
@@ -84,6 +99,7 @@
             [:div
               (title "One moment... determining your location....")
               [:form#resultsForm { :action "/places" :method :GET }
+                [:input {:type "hidden" :name "query" :value "Restaurants"}]
                 [:input#latitude {:type "hidden" :name "coord[lat]"}]
                 [:input#longitude {:type "hidden" :name "coord[lng]"}]
 
