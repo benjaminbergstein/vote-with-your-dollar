@@ -65,20 +65,21 @@
       (title (str "Score \"" name "\""))
 
       (for [question question/all]
-        [:div
-          [:div.content
-            [:p (:question question)]]
+        [:div.card { :style "margin-bottom: 1em; width: 66.67%" }
+          [:div.card-content
+            [:div.content
+              [:p (:question question)]]
 
-          [:form { :action (str "/scores") :method :POST }
-            [:input {:name "score[id]" :type "hidden" :value id}]
-            [:input {:name "score[question_id]" :type "hidden" :value (:id question)}]
+            [:form { :action (str "/scores") :method :POST }
+              [:input {:name "score[id]" :type "hidden" :value id}]
+              [:input {:name "score[question_id]" :type "hidden" :value (:id question)}]
 
-            (for [i [1 2 3 4 5]]
-              [:span
-                [:button.button {:name "score[value]" :value i} i]
-                [:span " "]
+              (for [i [1 2 3 4 5]]
+                [:span
+                  [:button.button {:name "score[value]" :value i} i]
+                  [:span " "]
 
-          ])]
+          ])]]
         ])]}))
 
 (defn scores-for-place [id name]
