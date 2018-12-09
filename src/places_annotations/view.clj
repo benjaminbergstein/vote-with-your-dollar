@@ -97,7 +97,12 @@
 (defn redirect []
   (common {:page/content
             [:div
-              (title "One moment... determining your location....")
+              (title "Welcome to Vote with Your Dollar")
+              [:p
+                [:span.icon
+                  [:i.fas.fa-globe]]
+                " One moment. Determining your location."]
+
               [:form#resultsForm { :action "/places" :method :GET }
                 [:input {:type "hidden" :name "query" :value "Restaurants"}]
                 [:input#latitude {:type "hidden" :name "coord[lat]"}]
