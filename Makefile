@@ -15,3 +15,6 @@ push:
 
 release: build tag push
 	ssh -i ${SSH_KEY} ec2-user@${SSH_HOST} "sudo ./dev/restart.sh"
+
+ssh:
+	ssh -i ${SSH_KEY} ec2-user@${SSH_HOST}

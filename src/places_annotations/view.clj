@@ -6,7 +6,8 @@
             [places-annotations.place :as place]
             [places-annotations.question :as question]
             [places-annotations.score :as score])
-  (:use hiccup.def))
+  (:use [hiccup.def]
+        [ring.util.anti-forgery]))
 
 (defn title [text] [:h1.title text])
 
@@ -71,6 +72,7 @@
               [:p (:question question)]]
 
             [:form { :action (str "/scores") :method :POST }
+              (anti-forgery-field)
               [:input {:name "score[id]" :type "hidden" :value id}]
               [:input {:name "score[question_id]" :type "hidden" :value (:id question)}]
 

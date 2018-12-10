@@ -5,11 +5,12 @@
 
 (deftest root
   (with-redefs [places-annotations.place/near-by
-    (fn [lat-lng]
+    (fn [lat-lng query]
       (is (= { :lat 37.7709925 :lng -122.43769239999999 }))
+      (is (= "Restaurants" query))
       [{"id" "foo-bar" "name" "DragonEats"}])]
 
-    (let [req (mock/request :get "/places?coord%5Blat%5D=37.7709925&coord%5B")
+    (let [req (mock/request :get "/places?coord%5Blat%5D=37.7709925&coord%5B&query=Restaurants")
           res (app req)]
 
       (is (re-find #".*DragonEats.*" (:body res))))))

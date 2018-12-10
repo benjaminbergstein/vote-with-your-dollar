@@ -9,11 +9,12 @@
 
 (deftest test-results
   (with-redefs [places-annotations.place/near-by
-    (fn [ll]
+    (fn [ll query]
       (is (= ll lat-lng))
+      (is (= "Restaurants" query))
       places)]
 
-    (let [html (view/places lat-lng)
+    (let [html (view/places lat-lng "Restaurants")
           matches [#"some place" #"/places/place-id/scores/new"]]
       (doseq [match matches] (is (re-find match html))))))
 
