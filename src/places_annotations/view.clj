@@ -42,6 +42,12 @@
 
       )])
 
+(defn search-field [query]
+    [:input.input { :type "text"
+                    :name "query"
+                    (case query "Restaurants" :placeholder :value) query
+                    :autofocus "autofocus"}])
+
 (defn places [lat-lng query]
   (common {:page/content
             [:div
@@ -50,7 +56,7 @@
               [:form { :action "/places" :method :GET }
                 [:div.field.has-addons
                   [:div.control.is-expanded.has-icons-left
-                    [:input.input {:type "text" :name "query" :value query :autofocus "autofocus"}]
+                    (search-field query)
                     [:span.icon.is-left
                       [:i.fas.fa-search]]]
                   [:div.control
