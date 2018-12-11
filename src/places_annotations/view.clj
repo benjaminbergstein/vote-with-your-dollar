@@ -31,7 +31,7 @@
         [:tr
           [:td
             [:a {:href (place/=>url result) :target "_BLANK"}
-              [:p (str (get result "name") " (" (get result "rating") ")")]]
+              [:p (str (get result "name"))]]
             [:p (get result "formatted_address")]]
 
           [:td
