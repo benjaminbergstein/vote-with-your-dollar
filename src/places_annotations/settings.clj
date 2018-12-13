@@ -15,10 +15,12 @@
                       (assoc-in [:security :anti-forgery] false)
                       (assoc-in [:responses :absolute-redirects] false))
 
+        dev-config site-defaults
+
         production-config (-> secure-site-defaults
                               (assoc :proxy true))]
 
     (case app-env
-      "development" site-defaults
+      "development" dev-config
       "test"        test-config
       production-config)))

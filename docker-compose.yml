@@ -15,7 +15,7 @@ services:
       - 65432:5432
 
   appserver:
-    image: "places-annotations:latest"
+    image: "benbergstein/places-annotations:latest"
     ports:
       - 3000:3000
     depends_on:
@@ -28,7 +28,7 @@ services:
       - db
 
   test:
-    image: "places-annotations:latest"
+    image: "benbergstein/places-annotations:latest"
     entrypoint: ["lein", "test"]
 
     environment:

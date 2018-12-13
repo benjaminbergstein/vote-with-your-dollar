@@ -11,12 +11,15 @@
 
 (defroutes main-routes
   (GET "/" [] (view/redirect))
-  (GET "/places" [coord query] (view/places coord query))
-  (GET "/places/:id/scores/new" [id name] (view/new-score id name))
+  (GET "/places" [coord query]
+      (view/places coord query))
+  (GET "/places/:id/scores/new" [id name :as request]
+      (view/new-score id name))
   (POST "/scores" [score]
     (score/submit score)
     {:status 302 :headers {"Location" "/"} :body ""})
-  (GET "/places/:id/scores" [id name] (view/scores-for-place id name))
+  (GET "/places/:id/scores" [id name]
+    (view/scores-for-place id name))
   (route/resources "/")
   (route/not-found "Page not found"))
 
