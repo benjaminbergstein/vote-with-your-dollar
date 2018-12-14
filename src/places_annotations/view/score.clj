@@ -15,8 +15,8 @@
                         4 "is-light"
                         5 ""  })
 
-(defn new [id name]
-  (common {:page/content
+(defn new [id name session]
+  (common session {:page/content
     [:div
       (title (str "Score \"" name "\""))
 
@@ -41,8 +41,8 @@
                   )]]]
             ])]]]}))
 
-(defn list-for-place [id name]
-  (common {:page/content
+(defn list-for-place [id name session]
+  (common session {:page/content
     [:div
      (title (str "Scores for \"" name "\""))
      [:table.table.is-fullwidth

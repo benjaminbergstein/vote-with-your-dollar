@@ -12,21 +12,34 @@
             [places-annotations.view.location :as view.location]
             ))
 
+(defn redirect-url [request] (get-in request [:session :query-url]))
+
 (defroutes main-routes
   (GET "/" [] (view.location/determine))
-  (GET "/places" [coord query]
-      (view.place/index coord query))
+
+  (GET "/places" [coord query :as request]
+      (let [query-url (str (request :uri) "?" (request :query-string))]
+        { :body (view.place/index coord query)
+          :status 200
+          :headers { "Content-Type" "text/html" }
+          :session (assoc (request :session) :query-url query-url)}))
+
   (GET "/places/:id/scores/new" [id name :as request]
-      (view.score/new id name))
-  (POST "/scores" [score]
+      { :body (view.score/new id name (request :session))
+        :status 200
+        :headers { "Content-Type" "text/html" } })
+
+  (POST "/scores" [score :as request]
     (score/submit score)
-    {:status 302 :headers {"Location" "/"} :body ""})
-  (GET "/places/:id/scores" [id name]
-    (view.score/list-for-place id name))
-  (route/resources "/")
+    { :body ""
+      :status 302
+      :headers { "Location" (redirect-url request) } })
+
+  (GET "/places/:id/scores" [id name :as request]
+    (view.score/list-for-place id name (request :session)))
+
   (route/not-found "Page not found"))
 
 (def app (-> main-routes
-             handler/site
              (wrap-defaults settings/ring-config)
          ))

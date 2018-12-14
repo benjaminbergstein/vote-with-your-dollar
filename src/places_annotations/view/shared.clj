@@ -13,7 +13,9 @@
     [:span { :class (str "icon " (:class options)) }
       [:i { :class (str "fas fa-" type) }]]))
 
-(defn common [page]
+(defn common
+  ([page] (common {} page))
+  ([session page]
     (ph/html5
       [:head [:meta {:charset "utf-8"}]
        [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge,chrome=1"}]
@@ -27,12 +29,12 @@
        [:nav.navbar
         [:div.container
          [:div.navbar-brand
-          [:a.navbar-item.has-text-primary { :href "/" }
+          [:a.navbar-item.has-text-primary { :href (or (session :query-url) "/") }
            (icon 'vote-yea) [:span " &nbsp;WYR"] (icon 'dollar-sign)]]]]
 
         [:div.section
          [:div.container
           (page :page/content)]]
 
-        (ph/include-js "/js/my.js")]))
+        (ph/include-js "/js/my.js")])))
 

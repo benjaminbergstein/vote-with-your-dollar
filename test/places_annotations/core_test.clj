@@ -16,19 +16,21 @@
       (is (re-find #".*DragonEats.*" (:body res))))))
 
 (deftest submit-score
-  (with-redefs [places-annotations.score/submit
+  (with-redefs [places-annotations.core/redirect-url (fn [request] "/foo")
+                places-annotations.score/submit
     (fn [score]
       (is (= score { :id "123" :value "1" })))]
 
     (let [req (-> :post
                 (mock/request "/scores")
                 (mock/body "score[id]=123&score[value]=1")
+                (assoc :session { :query-url "/foo" })
                 (mock/content-type "application/x-www-form-urlencoded"))
 
           res (app req)]
 
       (is (= 302 (:status res))
-      (is (= "/" (get-in res [:headers "Location"])))))))
+      (is (= "/foo" (get-in res [:headers "Location"])))))))
 
 (defn score [value]
   { :value value

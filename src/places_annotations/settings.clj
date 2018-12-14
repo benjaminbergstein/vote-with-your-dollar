@@ -1,5 +1,6 @@
 (ns places-annotations.settings
-  (:require [ring.middleware.defaults :refer :all]))
+  (:require [ring.middleware.defaults :refer :all])
+  (:use ring.middleware.session.cookie))
 
 (defmacro defenv
 
@@ -16,15 +17,19 @@
 (defenv db-pass        "DATABASE_PASSWORD" ""           )
 (defenv google-api-key "GOOGLE_API_KEY"                 )
 
+(defn shared-settings [] { :session { :store (cookie-store {:key "40c5db5c4b13bbb2"})
+                                      :cookie-attrs { :max-age 3600 } } })
 (def ring-config
   (let [test-config (-> site-defaults
                       (assoc-in [:security :anti-forgery] false)
-                      (assoc-in [:responses :absolute-redirects] false))
+                      (assoc-in [:responses :absolute-redirects] false)
+                      (merge (shared-settings)))
 
-        dev-config site-defaults
+        dev-config (merge site-defaults (shared-settings))
 
         production-config (-> secure-site-defaults
-                              (assoc :proxy true))]
+                              (assoc :proxy true)
+                              (merge (shared-settings)))]
 
     (case app-env
       "development" dev-config
