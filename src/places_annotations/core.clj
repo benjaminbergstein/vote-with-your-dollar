@@ -7,19 +7,22 @@
             [ring.middleware.defaults :refer :all]
             [places-annotations.score :as score]
             [places-annotations.settings :as settings]
-            [places-annotations.view :as view]))
+            [places-annotations.view.place :as view.place]
+            [places-annotations.view.score :as view.score]
+            [places-annotations.view.location :as view.location]
+            ))
 
 (defroutes main-routes
-  (GET "/" [] (view/redirect))
+  (GET "/" [] (view.location/determine))
   (GET "/places" [coord query]
-      (view/places coord query))
+      (view.place/index coord query))
   (GET "/places/:id/scores/new" [id name :as request]
-      (view/new-score id name))
+      (view.score/new id name))
   (POST "/scores" [score]
     (score/submit score)
     {:status 302 :headers {"Location" "/"} :body ""})
   (GET "/places/:id/scores" [id name]
-    (view/scores-for-place id name))
+    (view.score/list-for-place id name))
   (route/resources "/")
   (route/not-found "Page not found"))
 

@@ -1,4 +1,4 @@
-(ns places-annotations.view
+(ns places-annotations.view.location
   (:require [hiccup.core :as h]
             [hiccup.page :as ph]
             [hiccup.element :as elem]
@@ -7,9 +7,10 @@
             [places-annotations.question :as question]
             [places-annotations.score :as score])
   (:use [hiccup.def]
+        [places-annotations.view.shared]
         [ring.util.anti-forgery]))
 
-(defn redirect []
+(defn determine []
   (common {:page/content
             [:div
               (title "Welcome to Vote with Your Dollar")
@@ -23,4 +24,3 @@
                 [:input#longitude {:type "hidden" :name "coord[lng]"}]
 
               ]]}))
-
