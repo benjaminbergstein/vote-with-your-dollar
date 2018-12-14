@@ -1,10 +1,10 @@
 (ns places-annotations.place
   (:require [org.httpkit.client :as http]
+            [places-annotations.settings :as settings]
             [cheshire.core :refer :all]))
 
 (defn miles=>meters [miles] (* miles 1609.344))
 
-(def api-key (System/getenv "GOOGLE_API_KEY"))
 (def fields (str "formatted_address,geometry,name"))
 
 (defn base-url [path format]
@@ -22,7 +22,7 @@
 (defn params [lat-lng query]
   { :query query
     :fields fields
-    :key api-key
+    :key settings/google-api-key
     :location (lat-lng=>str lat-lng)
     :radius (miles=>meters 1) })
 

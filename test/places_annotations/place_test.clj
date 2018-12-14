@@ -1,6 +1,7 @@
 (ns places-annotations.place-test
   (:require [clojure.test :refer :all]
             [cheshire.core :refer :all]
+            [places-annotations.settings :as settings]
             [places-annotations.place :as place]))
 
 (def lat-lng { :lat 37.770594 :lng -122.435470 })
@@ -14,7 +15,7 @@
 (def expected-params
   { :query "lollipops"
     :fields place/fields
-    :key place/api-key
+    :key settings/google-api-key
     :location lat-lng-str
     :radius one-miles })
 
