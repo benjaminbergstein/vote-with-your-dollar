@@ -9,7 +9,8 @@ window.addEventListener('load', function() {
     function success(position) {
       window.latitude.value = position.coords.latitude;
       window.longitude.value = position.coords.longitude;
-      window.resultsForm.submit();
+      window.beforeLocationDetermined.classList.toggle('is-hidden', true)
+      window.afterLocationDetermined.classList.toggle('is-hidden', false)
     }
 
     function error() {

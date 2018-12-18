@@ -13,19 +13,22 @@
 (defn- places-near=>table [lat-lng query]
   [:table.table.is-fullwidth
     [:thead
-      [:tr [:th {:colspan 3} "Places Nearby"]]]
+      [:tr [:th {:colspan 4} "Places Nearby"]]]
       (for [result (place/near-by lat-lng query)]
         [:tr
           [:td
-            [:a {:href (place/=>url result) :target "_BLANK"}
-              [:p (str (get result "name"))]]
-            [:p (get result "formatted_address")]]
+           [:a {:href (place/=>url result) :target "_BLANK"}
+            [:p (str (get result "name"))]]
+           [:p (get result "formatted_address")]]
 
           [:td
-            [:a {:href (str "/places/" (get result "id") "/scores/new?name=" (get result "name"))} "add score"]]
+           [:a {:href (str "/places/" (get result "id") "/scores/new?name=" (get result "name"))} "add score"]]
 
           [:td
-            [:a {:href (str "/places/" (get result "id") "/scores?name=" (get result "name"))} "see scores"]]]
+           [:a {:href (str "/places/" (get result "id") "/scores?name=" (get result "name"))} "see scores"]]
+
+          [:td
+           (count (score/for-place (get result "id")))]]
 
       )])
 
