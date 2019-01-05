@@ -12,13 +12,13 @@
                  [hiccup "1.0.5"]
                  [ring/ring-defaults "0.3.2"]
 
-
                  ;; tools
                  [cheshire "5.8.1"]
                  [http-kit "2.3.0"]
+                 [haversine "0.1.1"]
 
                  ;; db
-                 [org.postgresql/postgresql "42.2.5"]
+                 [clj-postgresql "0.7.0"]
                  [org.clojure/java.jdbc "0.7.8"]
 
                  [ring/ring-mock "0.3.2"]]

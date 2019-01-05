@@ -1,14 +1,15 @@
 (ns places-annotations.score
-  (:require [clojure.java.jdbc :as jdbc]
+  (:require [clj-postgresql.core :as pg]
+            [clojure.string :as string]
+            [clojure.java.jdbc :as jdbc]
             [places-annotations.question :as question]
             [places-annotations.settings :as settings]))
 
-(defn setup [app-env] { :dbtype   "postgres"
-                        :dbname   (str "places_annotations_" app-env)
-                        :host     settings/db-host
-                        :user     settings/db-user
-                        :port     settings/db-port
-                        :password settings/db-pass })
+(defn setup [app-env] (pg/pool :dbname   (str "places_annotations_" app-env)
+                               :host     settings/db-host
+                               :user     settings/db-user
+                               :port     settings/db-port
+                               :password settings/db-pass ))
 
 (def conn (setup settings/app-env))
 
@@ -32,4 +33,6 @@
       (assoc :question (question/by-id (:question_id attrs)))))
 
 (defn for-place [id]
-  (jdbc/query conn ["SELECT value, question_id FROM scores WHERE id = ?" id] { :row-fn score }))
+  (let [active-ids (map #(% :id) question/active)
+        sql (str "SELECT value, question_id FROM scores WHERE id = '" id "' AND question_id IN (" (string/join ", " active-ids) ")")]
+    (jdbc/query conn sql { :row-fn score })))

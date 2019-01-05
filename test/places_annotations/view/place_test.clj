@@ -2,8 +2,8 @@
   (:require [clojure.test :refer :all]
             [places-annotations.view.place :as view.place]))
 
-(def places [{ "id"   "place-id"
-               "name" "some place" }])
+(def places [{ "place_id"   "place-id"
+               "namedetails" { "name" "some place" } }])
 
 (def lat-lng { :lat 70 :lng -125 })
 

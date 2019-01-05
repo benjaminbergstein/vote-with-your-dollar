@@ -4,37 +4,32 @@
             [places-annotations.settings :as settings]
             [places-annotations.place :as place]))
 
-(def lat-lng { :lat 37.770594 :lng -122.435470 })
+(def lat-lng { :lat "37.765264" :lng "-122.446521" })
 
 (def one-miles (place/miles=>meters 1))
 
-(def lat-lng-str (place/lat-lng=>str lat-lng))
+(def lat-lng-str "-122.31831113896015,37.66377383783784,-122.57473086103985,37.86675416216217")
 (def point (str "point:" lat-lng-str))
 (def circle (str "circle:" one-miles "@" lat-lng-str))
 
-(def expected-params
-  { :query "lollipops"
-    :fields place/fields
-    :key settings/google-api-key
-    :location lat-lng-str
-    :radius one-miles })
+(def expected-params { :q "lollipops"
+                       :format "jsonv2"
+                       :addressdetails "1"
+                       :namedetails    "1"
+                       :bounded        "1"
+                       :limit          "25"
+                       :viewbox lat-lng-str })
 
-(def expected-base-url "https://maps.googleapis.com/maps/api/place/textsearch/json")
-
-(deftest lat-lng=>point
-  (is (= point (place/lat-lng=>point lat-lng))))
-
-(deftest lat-lng=>circle
-  (is (= circle (place/lat-lng=>circle lat-lng one-miles))))
+(def expected-base-url "https://nominatim.openstreetmap.org/search.php")
 
 (deftest params
     (is (= expected-params (place/params lat-lng "lollipops"))))
 
 (deftest base-url
-  (is (= expected-base-url (place/base-url "textsearch" "json"))))
+  (is (= expected-base-url (place/base-url))))
 
 (def sample-response
-  { :body (generate-string { "results" [ "foo" "bar" "baz" ] }) })
+  { :body (generate-string [ "foo" "bar" "baz" ]) })
 
 (defn a []
   (fn [url options]

@@ -1,14 +1,44 @@
 [
   {
     "id": 1,
-    "question": "How easily recycled/disposed are the takeaway containers?"
+    "question": "How easily recycled/disposed are the takeaway containers?",
+    "type": "scale",
+    "active": false
   },
   {
     "id": 2,
-    "question": "How easy is it to order as a vegan?"
+    "question": "How easy is it to order as a vegan?",
+    "type": "scale",
+    "active": false
   },
   {
-    "id": 2,
-    "question": "How easy is it to order as a vegetarian diet?"
+    "id": 3,
+    "question": "How easy is it to order as a vegetarian diet?",
+    "type": "scale",
+    "active": false
+  },
+  {
+    "id": 4,
+    "question": "Are the takeaway containers compostable?",
+    "type": "yn",
+    "active": true
+  },
+  {
+    "id": 5,
+    "question": "Are the takeaway containers recycleable?",
+    "type": "yn",
+    "active": true
+  },
+  {
+    "id": 6,
+    "question": "Are there good vegetarian options?",
+    "type": "yn",
+    "active": true
+  },
+  {
+    "id": 7,
+    "question": "Are there good vegan options?",
+    "type": "yn",
+    "active": true
   }
 ]

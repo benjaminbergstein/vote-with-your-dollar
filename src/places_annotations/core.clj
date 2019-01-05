@@ -13,12 +13,18 @@
 
 (defn redirect-url [request] (get-in request [:session :query-url]))
 
+(defn handle-default [query]
+  (case query
+    nil "Restaurants"
+    ""  "Restaurants"
+    query))
+
 (defroutes main-routes
   (GET "/" [] (view.location/determine))
 
   (GET "/places" [coord query :as request]
       (let [query-url (str (request :uri) "?" (request :query-string))]
-        { :body (view.place/index coord query)
+        { :body (view.place/index coord (handle-default query))
           :status   200
           :headers  { "Content-Type" "text/html" }
           :session  (assoc (request :session) :query-url query-url)}))

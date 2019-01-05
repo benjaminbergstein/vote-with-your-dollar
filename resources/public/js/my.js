@@ -1,20 +1,27 @@
 window.addEventListener('load', function() {
   if (typeof window.resultsForm !== 'undefined') {
     if (!navigator.geolocation){
-      alert("This doesn't work without your location");
+      setView('error');
     }
 
     navigator.getCurrentPosition = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
 
+    function setView(visible) {
+      window.beforeLocationDetermined.classList.toggle('is-hidden', visible !== 'before')
+      window.afterLocationDetermined.classList.toggle('is-hidden', visible !== 'after')
+      window.locationError.classList.toggle('is-hidden', visible !== 'error')
+    }
+
     function success(position) {
-      window.latitude.value = position.coords.latitude;
-      window.longitude.value = position.coords.longitude;
-      window.beforeLocationDetermined.classList.toggle('is-hidden', true)
-      window.afterLocationDetermined.classList.toggle('is-hidden', false)
+      if (position.coords.latitude != window.latitude.value || position.coords.longitude != window.longitude.value) {
+        window.latitude.value = position.coords.latitude;
+        window.longitude.value = position.coords.longitude;
+        setView('after');
+      }
     }
 
     function error() {
-      alert("This doesn't work without your location");
+      setView('error');
     }
 
     navigator.geolocation.watchPosition(success, error, {

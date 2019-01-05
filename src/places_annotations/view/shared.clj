@@ -20,7 +20,7 @@
       [:head [:meta {:charset "utf-8"}]
        [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge,chrome=1"}]
        [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1"}]
-       [:title "Vote with your dollar"]
+       [:title "Dollar Voting - Vote with your dollar!"]
        (ph/include-css "/css/my.css")
        (ph/include-css "/css/bulma.css")
        (ph/include-css "/css/fontawesome.css")]
@@ -29,8 +29,8 @@
        [:nav.navbar
         [:div.container
          [:div.navbar-brand
-          [:a.navbar-item.has-text-primary { :href (or (session :query-url) "/") }
-           (icon 'vote-yea) [:span " &nbsp;WYR"] (icon 'dollar-sign)]]]]
+          [:a.navbar-item.has-text-primary { :href (or (session :query-url) "/") :title "Dollar Voting" }
+           (icon 'dollar-sign) (icon 'vote-yea)]]]]
 
         [:div.section
          [:div.container

@@ -9,7 +9,8 @@
         [places-annotations.view.shared]
         [ring.util.anti-forgery]))
 
-(def button-class-map { 1 ""
+(def button-class-map { 0 "is-light"
+                        1 ""
                         2 "is-light"
                         3 "has-text-weight-semibold"
                         4 "is-light"
@@ -22,7 +23,7 @@
 
       [:div.columns
         [:div.column.is-four-fifths
-          (for [question question/all]
+          (for [question question/active]
             [:div.card { :style "margin-bottom: 1em;" }
               [:div.card-content
                 [:div.content
@@ -34,9 +35,9 @@
                   [:input {:name "score[question_id]" :type "hidden" :value (:id question)}]
 
                   [:div.columns
-                    (for [i [1 2 3 4 5]]
+                    (for [[value label] (question :answers)]
                       [:div.column.is-one-fifth
-                        [:button.button.is-fullwidth { :class (get button-class-map i) :name "score[value]" :value i} i]]
+                        [:button.button.is-fullwidth { :class (get button-class-map value) :name "score[value]" :value value} label]]
 
                   )]]]
             ])]]]}))

@@ -8,7 +8,7 @@
     (fn [lat-lng query]
       (is (= { :lat 37.7709925 :lng -122.43769239999999 }))
       (is (= "Restaurants" query))
-      [{"id" "foo-bar" "name" "DragonEats"}])]
+      [{"place_id" "foo-bar" "namedetails" { "name" "DragonEats" } }])]
 
     (let [req (mock/request :get "/places?coord%5Blat%5D=37.7709925&coord%5B&query=Restaurants")
           res (app req)]
@@ -24,7 +24,6 @@
     (let [req (-> :post
                 (mock/request "/scores")
                 (mock/body "score[id]=123&score[value]=1")
-                (assoc :session { :query-url "/foo" })
                 (mock/content-type "application/x-www-form-urlencoded"))
 
           res (app req)]

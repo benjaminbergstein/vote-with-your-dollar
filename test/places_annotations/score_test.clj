@@ -19,17 +19,18 @@
 (deftest test-for-place
   (with-redefs [places-annotations.score/conn db]
     (jdbc/execute! db ["TRUNCATE scores"])
-    (score/submit (score "some-id" "5" "1"))
-    (score/submit (score "some-id" "4" "2"))
-    (score/submit (score "other-id" "3" "3"))
+    (score/submit (score "99" "0" "4"))
+    (score/submit (score "99" "1" "5"))
+    (score/submit (score "99" "5" "2"))
+    (score/submit (score "100" "4" "4"))
 
-    (let [scores (score/for-place "some-id")]
+    (let [scores (score/for-place "99")]
       (is (= 2 (count scores)))
 
-      (is (= 1 (:question_id (nth scores 0))))
-      (is (= 5 (:value (nth scores 0))))
+      (is (= 0 (:value (nth scores 0))))
+      (is (= 4 (:question_id (nth scores 0))))
 
-      (is (= 2 (:question_id (nth scores 1))))
-      (is (= 4 (:value (nth scores 1))))
+      (is (= 1 (:value (nth scores 1))))
+      (is (= 5 (:question_id (nth scores 1))))
 
     )))
