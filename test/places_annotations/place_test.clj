@@ -1,6 +1,7 @@
 (ns places-annotations.place-test
   (:require [clojure.test :refer :all]
             [cheshire.core :refer :all]
+            [places-annotations.support.db :refer :all]
             [places-annotations.settings :as settings]
             [places-annotations.place :as place]))
 
@@ -31,7 +32,7 @@
 (def sample-response
   { :body (generate-string [ "foo" "bar" "baz" ]) })
 
-(defn a []
+(defn fake-get []
   (fn [url options]
     (let [p (promise)]
       (is (= expected-base-url url))
@@ -45,10 +46,27 @@
 
 (defmacro with-stubbed [& body]
   `(with-redefs
-    [org.httpkit.client/get (a)]
+    [org.httpkit.client/get (fake-get)]
 
     (do ~@body)))
 
 (deftest near
   (with-stubbed
     (is (= [ "foo" "bar" "baz" ] (place/near-by lat-lng "lollipops")))))
+
+(def fixture
+  (-> "test/places_annotations/fixtures/search.json"
+      (slurp)
+      (parse-string)))
+
+(deftest create-scratch
+  (with-db
+    (as-> (place/create { "name" "Thailand Restaurant" }) pl
+      (is (= "Thailand Restaurant"
+             (->> pl (place/find-by :uuid) (:name)))))))
+
+(deftest create-from-osm
+  (with-db
+    (place/create (first fixture))
+    (is (= "Thailand Restaurant"
+           (->> "5192196" (place/find-by :osm_id) (:name))))))

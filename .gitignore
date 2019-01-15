@@ -3,3 +3,5 @@
 *.swo
 target
 data/postgres
+.lein-repl-history
+tmp/*

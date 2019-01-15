@@ -2,6 +2,11 @@
   (:require [org.httpkit.client :as http]
             [places-annotations.settings :as settings]
             [haversine.core :as h]
+            [clj-postgresql.core :as pg]
+            [clojure.string :as string]
+            [clojure.java.jdbc :as jdbc]
+            [places-annotations.question :as question]
+            [places-annotations.db :as db]
             [cheshire.core :refer :all])
   (:use [clojure.set :only (rename-keys)]))
 
@@ -40,12 +45,6 @@
 (defn lat-lng=>str [lat-lng]
   (str (:lat lat-lng) "," (:lng lat-lng)))
 
-(defn lat-lng=>point [lat-lng]
-  (str "point:" (lat-lng=>str lat-lng)))
-
-(defn lat-lng=>circle [lat-lng meters]
-  (str "circle:" meters "@" (lat-lng=>str lat-lng)))
-
 (defn params [lat-lng query] { :q              query
                                :format         "jsonv2"
                                :addressdetails "1"
@@ -60,14 +59,24 @@
   (str "https://www.google.com/maps/search/" (name place)))
 
 (defn near-by [lat-lng query]
-  (let [options { :query-params (params lat-lng query) }
-        res @(http/get (base-url) options)]
+  (as-> { :query-params (params lat-lng query) } options
+    (-> @(http/get (base-url) options) (:body)
+      (doto (->> (spit "./tmp/last_response.json")))
+      (parse-string))))
 
-    (let [data (-> res
-      (:body)
-      (parse-string))]
+(defn attrs=>insert [attrs] { :osm_id   (attrs "place_id")
+                              :name     (or (attrs "name") (name attrs)) })
 
-      (spit "./foo.json" (generate-string data))
+(defn create [attrs]
+  (doto (db/uuid) (as-> uuid
+    (-> attrs (as-> attrs
+      (attrs=>insert attrs)
+      (assoc attrs :uuid uuid)
+      (jdbc/insert! db/conn "places" attrs))))))
 
-      data)))
+(defn place [attrs] attrs)
 
+(defn find-by [col value]
+  (as-> (case col :id "id" :osm_id "osm_id" :uuid "uuid") col
+    (as-> (str "SELECT * FROM places WHERE " col "= ?") sql
+      (-> db/conn (jdbc/query [sql value] { :row-fn place }) (first)))))
